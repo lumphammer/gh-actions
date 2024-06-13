@@ -96,6 +96,9 @@ jobs:
           ./tasks.ts updateManifestFromCITagPush
           cat $MANIFEST_PATH
 
+      - name: Typecheck
+        run: pnpm run typecheck
+
       - name: Test
         run: pnpm test
 

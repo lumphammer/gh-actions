@@ -102,13 +102,13 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: ESlint
-        run: pnpm run eslint:check
+      - name: Lint
+        run: pnpm run lint:check
 
       - name: Check formatting
         run: pnpm run format:check
 
-      - name: Build
+      - name: Build Package
         run: pnpm package
 
       - name: Upload package file

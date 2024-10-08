@@ -29,6 +29,10 @@ on:
         type: boolean
         default: false
 
+    secrets:
+      foundry_package_release_token:
+        required: false
+
 
 env:
   MANIFEST_FILE_NAME: ${{ inputs.manifest_file_name }}
@@ -193,6 +197,6 @@ jobs:
       - name: publish
         uses: cs96and/FoundryVTT-release-package@v1
         with:
-          package-token: ${{secrets.FOUNDRY_PACKAGE_RELEASE_TOKEN}}
+          package-token: ${{secrets.foundry_package_release_token}}
           manifest-url: ${{needs.parse_tag.outputs.manifest_url}}
           dry-run: ${{inputs.foundry_package_release_dry_run}}

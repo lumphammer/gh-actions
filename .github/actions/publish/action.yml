@@ -12,6 +12,9 @@ inputs:
   prerelease:
     description: 'Pre-release signifier'
     required: false
+  manifest_file_name:
+    description: 'The name of the manifest file'
+    required: true
   package_file_name:
     description: 'The name of the package file'
     required: true

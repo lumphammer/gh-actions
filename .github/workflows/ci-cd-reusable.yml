@@ -28,9 +28,8 @@ on:
         required: false
         type: boolean
         default: false
-
     secrets:
-      foundry_package_release_token:
+      FOUNDRY_PACKAGE_RELEASE_TOKEN:
         required: false
 
 
@@ -197,6 +196,6 @@ jobs:
       - name: publish
         uses: cs96and/FoundryVTT-release-package@v1
         with:
-          package-token: ${{secrets.foundry_package_release_token}}
+          package-token: ${{secrets.FOUNDRY_PACKAGE_RELEASE_TOKEN}}
           manifest-url: ${{needs.parse_tag.outputs.manifest_url}}
           dry-run: ${{inputs.foundry_package_release_dry_run}}

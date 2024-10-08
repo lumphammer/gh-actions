@@ -174,7 +174,7 @@ jobs:
       - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4
 
       - name: publish
-        uses: lumphammer/gh-actions/.github/actions/publish@main
+        uses: lumphammer/gh-actions/.github/actions/publish@2024-10-08
         with:
           version: ${{needs.parse_tag.outputs.tag_version}}
           prerelease: ${{needs.parse_tag.outputs.tag_prerelease}}

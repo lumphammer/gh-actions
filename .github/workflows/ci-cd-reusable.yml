@@ -156,6 +156,7 @@ jobs:
           package_file_name: ${{env.PACKAGE_FILE_NAME}}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           manifest_url: ${{needs.parse_tag.outputs.manifest_url}}
+          manifest_file_name: ${{env.MANIFEST_FILE_NAME}}
 
   publish-release:
     needs:
@@ -177,6 +178,7 @@ jobs:
           package_file_name: ${{env.PACKAGE_FILE_NAME}}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           manifest_url: ${{needs.parse_tag.outputs.manifest_url}}
+          manifest_file_name: ${{env.MANIFEST_FILE_NAME}}
 
 
   publish-to-foundry:

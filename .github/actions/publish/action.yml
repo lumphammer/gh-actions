@@ -12,18 +12,16 @@ inputs:
   prerelease:
     description: 'Pre-release signifier'
     required: false
-  manifest_file_name:
-    description: 'The name of the manifest file'
-    required: true
   package_file_name:
     description: 'The name of the package file'
-    required: true
-  download_base:
-    description: 'The base URL for downloads'
     required: true
   github_token:
     description: 'The GitHub token'
     required: true
+  manifest_url:
+    description: 'The URL of the manifest'
+    required: true
+
 
 runs:
   using: "composite"
@@ -58,4 +56,4 @@ runs:
         body: >
           **Installation:** To manually install this release, please use the
           following manifest URL:
-          ${{inputs.download_base}}/${{inputs.version}}/${{inputs.manifest_file_name}}
+          ${{inputs.manifest_url}}

@@ -34,9 +34,11 @@ on:
       do_space_name:
         type: string
         required: false
+        default: lumphammer-fvtt-packages
       do_space_region:
         type: string
         required: false
+        default: lon1
       changelog_file_name:
         type: string
         required: false
@@ -59,7 +61,7 @@ env:
   PACKAGE_FILE_NAME: ${{ inputs.package_id }}.zip
   PACKAGE_PATH: ${{ inputs.package_path }}
   DOWNLOAD_BASE_GH: "https://github.com/${{github.repository}}/releases/download"
-  DOWNLOAD_BASE_DO: "https://${{inputs.do_space_name}}.${{inputs.do_space_region}}.digitaloceanspaces.com/${{inputs.package_id}}/releases"
+  DOWNLOAD_BASE_DO: "https://${{inputs.do_space_name}}.${{inputs.do_space_region}}.cdn.digitaloceanspaces.com/${{inputs.package_id}}/releases"
 
 jobs:
   parse_tag:

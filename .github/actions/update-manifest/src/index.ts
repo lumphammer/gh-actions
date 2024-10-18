@@ -28,7 +28,7 @@ if (tag !== `v${version}`) {
 }
 
 if (["true", "1", "yes", "y", "t"].includes(releaseToBucket.toLowerCase())) {
-  manifest.download = `https://${doSpaceName}.${doSpaceRegion}.digitaloceanspaces.com/${id}/releases/${tag}/${id}.zip`;
+  manifest.download = `https://${doSpaceName}.${doSpaceRegion}.cdn.digitaloceanspaces.com/${id}/releases/${tag}/${id}.zip`;
 } else {
   manifest.download = `https://github.com/${owner}/${repo}/releases/download/${tag}/${id}.zip`;
 }

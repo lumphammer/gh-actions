@@ -3,9 +3,6 @@
 # CI/CD WORKFLOW
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# https://docs.github.com/en/actions/sharing-automations/creating-actions/metadata-syntax-for-github-actions
-
-
 name: Update manifest
 description: 'Set the download URLs in the FVTT manifest'
 inputs:

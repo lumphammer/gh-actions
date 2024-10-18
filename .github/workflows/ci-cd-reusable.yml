@@ -178,7 +178,7 @@ jobs:
 
 
   upload-to-bucket:
-    name: Upload to DO bucket if needed
+    name: Upload to bucket
     needs:
       - build
       - parse_tag

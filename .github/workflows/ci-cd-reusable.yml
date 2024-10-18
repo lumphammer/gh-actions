@@ -37,6 +37,14 @@ on:
       do_space_region:
         type: string
         required: false
+      changelog_file_name:
+        type: string
+        required: false
+        default: CHANGELOG.md
+      readme_file_name:
+        type: string
+        required: false
+        default: README.md
     secrets:
       FOUNDRY_PACKAGE_RELEASE_TOKEN:
         required: false
@@ -152,6 +160,22 @@ jobs:
           if-no-files-found: error
           path: ${{env.PUBLIC_PATH}}/${{env.MANIFEST_FILE_NAME}}
 
+      - name: Upload CHANGELOG
+        uses: actions/upload-artifact@v4
+        if: inputs.release_to_bucket && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == ''
+        with:
+          name: changelog
+          if-no-files-found: error
+          path: ${{inputs.changelog_file_name}}
+
+      - name: Upload README
+        uses: actions/upload-artifact@v4
+        if: inputs.release_to_bucket && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == ''
+        with:
+          name: readme
+          if-no-files-found: error
+          path: ${{inputs.readme_file_name}}
+
 
   upload-to-bucket:
     name: Upload to DO bucket if needed
@@ -191,6 +215,19 @@ jobs:
           source: .
           out_dir: ${{inputs.package_id}}/releases/${{needs.parse_tag.outputs.tag_version}}
 
+      # we download CHANGELOG and README here because they're not needed for prereleases
+      - name: Download CHANGELOG
+        if: needs.parse_tag.outputs.tag_prerelease == ''
+        uses: actions/download-artifact@v4
+        with:
+          name: changelog
+
+      - name: Download README
+        if: needs.parse_tag.outputs.tag_prerelease == ''
+        uses: actions/download-artifact@v4
+        with:
+          name: readme
+
       - id: upload_latest
         name: Upload to bucket (latest)
         if: needs.parse_tag.outputs.tag_prerelease == ''
@@ -202,7 +239,6 @@ jobs:
           space_region: ${{ inputs.do_space_region }}
           source: .
           out_dir: ${{inputs.package_id}}/releases/latest
-
 
   publish-prerelease:
     name: Publish prerelease

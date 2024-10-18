@@ -1,0 +1,30 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# IF YOU UPDATE THIS ACTION, CREATE A NEW TAG AND UPDATE THE REFERENCE IN THE
+# CI/CD WORKFLOW
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+# https://docs.github.com/en/actions/sharing-automations/creating-actions/metadata-syntax-for-github-actions
+
+
+name: Update manifest
+description: 'Set the download URLs in the FVTT manifest'
+inputs:
+  manifest_path:
+    description: 'The name of the manifest file'
+    required: true
+  release_to_bucket:
+    description: 'Publish to bucket (yes or no)'
+    required: true
+  tag:
+    description: 'The tag push that triggered this release'
+    required: true
+  do_space_name:
+    description: 'The name of the DO space'
+    required: true
+  do_space_region:
+    description: 'The region of the DO space'
+    required: true
+
+runs:
+  using: "node20"
+  main: "dist/index.js"

@@ -6,55 +6,100 @@ on:
       manifest_file_name:
         required: true
         type: string
+        description: 'The name of the manifest file, e.g. `module.json`'
       package_id:
         required: true
         type: string
+        description: 'The Foundry ID of the package, e.g. `my-graet-module`'
       foundry_package_release:
         required: true
         type: boolean
+        description: >
+          Whether to release to Foundry - only do this for packages that have
+          been submitted to and acceptred by Foundry. If this is set to `true`,
+          the `FOUNDRY_PACKAGE_RELEASE_TOKEN` secret must be set. You can also
+          set the `foundry_package_release_dry_run` input to `true` to test
+          release without actually releasing.
       release_to_bucket:
         required: true
         type: boolean
+        description: >
+          Whether to release to a DO bucket. If this is set to `true`, the
+          `DO_ACCESS_KEY` and `DO_SECRET_KEY` secrets must be set. You can also
+          set the `do_space_name` and `do_space_region` inputs to override the
+          defaults (`lumphammer-fvtt-packages` and `lon1` respectively).
 
       public_path:
         required: false
         type: string
         default: "public"
+        description: >
+          Relative path from the root of the repo to the directory where static
+          assets are stored, e.g. `public`.
       pnpm_version:
         required: false
         type: string
         default: "9"
+        description: 'The version of pnpm to use, e.g. `9`'
       package_path:
         required: false
         type: string
         default: "build_package"
+        description: >
+          Relative path from the root of the repo to the directory where built
+          package zip files are stored, e.g. `build_package`.
       foundry_package_release_dry_run:
         required: false
         type: boolean
         default: false
+        description: >
+          Whether to run Foundry release in dry-run mode. This will not actually
+          release the package to Foundry but checks that your key is valid and
+          that Foundry is happy.
       do_space_name:
         type: string
         required: false
         default: lumphammer-fvtt-packages
+        description: >
+          The name of the DO space to upload to.
       do_space_region:
         type: string
         required: false
         default: lon1
+        description: >
+          The region of the DO space to upload to.
       changelog_file_name:
         type: string
         required: false
         default: CHANGELOG.md
+        description: >
+          The name of the changelog file, e.g. `CHANGELOG.md`. This is only used
+          when `release_to_bucket` is set to `true` and a non-prerelease tag is
+          pushed.
       readme_file_name:
         type: string
         required: false
         default: README.md
+        description: >
+          The name of the readme file, e.g. `README.md`. This is only used when
+          `release_to_bucket` is set to `true` and a non-prerelease tag is
+          pushed.
     secrets:
       FOUNDRY_PACKAGE_RELEASE_TOKEN:
         required: false
+        description: >
+          The Foundry API token to use when releasing to Foundry. This is only
+          used when `foundry_package_release` is set to `true`.
       DO_ACCESS_KEY:
         required: false
+        description: >
+          The DigitalOcean access key to use when releasing to a DO bucket. This
+          is only used when `release_to_bucket` is set to `true`.
       DO_SECRET_KEY :
         required: false
+        description: >
+          The DigitalOcean secret key to use when releasing to a DO bucket. This
+          is only used when `release_to_bucket` is set to `true`.
 
 env:
   MANIFEST_FILE_NAME: ${{ inputs.manifest_file_name }}

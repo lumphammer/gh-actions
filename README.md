@@ -38,6 +38,8 @@ jobs:
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true' || github.ref_type == 'tag'
     uses: lumphammer/gh-actions/.github/workflows/ci-cd-reusable.yml@XXXXX
+    permissions:
+      contents: write
     with:
       package_id: "xxx-xxx-xxx"
       manifest_file_name: "module.json"

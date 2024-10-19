@@ -6,9 +6,6 @@ on:
       manifest_file_name:
         required: true
         type: string
-      public_path:
-        required: true
-        type: string
       package_id:
         required: true
         type: string
@@ -19,6 +16,10 @@ on:
         required: true
         type: boolean
 
+      public_path:
+        required: false
+        type: string
+        default: "public"
       pnpm_version:
         required: false
         type: string
@@ -26,7 +27,7 @@ on:
       package_path:
         required: false
         type: string
-        default: "package"
+        default: "build_package"
       foundry_package_release_dry_run:
         required: false
         type: boolean

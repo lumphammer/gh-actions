@@ -2,7 +2,12 @@
 
 module.exports = {
   extends: ["./packages/shared-fvtt-bits/dotfiles/import/.eslintrc.cjs"],
-  // ignorePatterns: [".eslintrc.cjs", `src/${id}.js`],
+  ignorePatterns: ["**/dist/*", "!.github"],
+  settings: {
+    react: {
+      version: "19",
+    },
+  },
   // add rules changes here
   rules: {},
 };

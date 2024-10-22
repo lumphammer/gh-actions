@@ -3,17 +3,16 @@
 // CI/CD WORKFLOW
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-import fs from "fs";
 import { getInput, info } from "@actions/core";
 import { context } from "@actions/github";
+import fs from "fs";
+
 import { isTruthyString } from "../../../src/helpers";
 
 // fetch inputs
 const manifestPath = getInput("manifest_path", {
   required: true,
 });
-
-const foo = 5;
 
 const releaseToBucket = isTruthyString(
   getInput("release_to_bucket", { required: true }),

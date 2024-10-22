@@ -3,8 +3,9 @@
 // CI/CD WORKFLOW
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+import { getInput } from "@actions/core";
 import fs from "fs";
-import { getInput, info } from "@actions/core";
+
 import {
   checkUrl,
   isNonEmptyString,
@@ -18,11 +19,11 @@ const fvttManifestPath = getInput("manifest_path", {
 });
 const strictMode = isTruthyString(getInput("strict_mode", { required: true }));
 const releaseToBucket = isTruthyString(
-  getInput("release_to_bucket", { required: true })
+  getInput("release_to_bucket", { required: true }),
 );
 const tag = getInput("tag", { required: true });
-const doSpaceName = getInput("do_space_name", { required: true });
-const doSpaceRegion = getInput("do_space_region", { required: true });
+// const doSpaceName = getInput("do_space_name", { required: true });
+// const doSpaceRegion = getInput("do_space_region", { required: true });
 
 // /////////////////////////////////////////////////////////////////////////////
 // parse manifests as JSON
@@ -36,7 +37,7 @@ const errors: string[] = [];
 // package name
 if (nodeManifest.name !== `${fvttManifest.id}-fvtt`) {
   errors.push(
-    `Package ID/name mismatch: FVTT manifest at ${fvttManifestPath} ID (${fvttManifest.id}) does not match package.json name without "-fvtt" suffix (${nodeManifest.name})`
+    `Package ID/name mismatch: FVTT manifest at ${fvttManifestPath} ID (${fvttManifest.id}) does not match package.json name without "-fvtt" suffix (${nodeManifest.name})`,
   );
 }
 
@@ -44,19 +45,19 @@ if (nodeManifest.name !== `${fvttManifest.id}-fvtt`) {
 // version match between manifests and tag (if pushing a tag)
 if (fvttManifest.version !== nodeManifest.version) {
   errors.push(
-    `Version mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match package.json version (${nodeManifest.version})`
+    `Version mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match package.json version (${nodeManifest.version})`,
   );
 }
 
 if (isNonEmptyString(tag)) {
   if (`v${fvttManifest.version}` !== tag) {
     errors.push(
-      `Tag mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match tag (${tag})`
+      `Tag mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match tag (${tag})`,
     );
   }
   if (`v${nodeManifest.version}` !== tag) {
     errors.push(
-      `Tag mismatch: package.json version (${nodeManifest.version}) does not match tag (${tag})`
+      `Tag mismatch: package.json version (${nodeManifest.version}) does not match tag (${tag})`,
     );
   }
 }
@@ -88,7 +89,7 @@ for (const mediaType of mediaTypes) {
   const mediaError = await checkUrl(media.url, strictMode);
   if (mediaError) {
     errors.push(
-      `${fvttManifestPath}: ${mediaType} media URL (${media.url}): ${mediaError}`
+      `${fvttManifestPath}: ${mediaType} media URL (${media.url}): ${mediaError}`,
     );
   }
 }
@@ -100,7 +101,7 @@ if (releaseToBucket) {
   const downloadError = await checkUrl(downloadUrl, strictMode);
   if (downloadError) {
     errors.push(
-      `${fvttManifestPath}: download URL (${downloadUrl}): ${downloadError}`
+      `${fvttManifestPath}: download URL (${downloadUrl}): ${downloadError}`,
     );
   }
 }

@@ -12,9 +12,9 @@ export function isNonEmptyString(value: any): boolean {
 
 function isParseableUrl(url: string): boolean {
   try {
-    new URL(url);
+    void new URL(url);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -27,14 +27,14 @@ async function isReachable(url: string): Promise<boolean> {
   try {
     const response = await fetch(url);
     return response.ok;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
 
 export async function checkUrl(
   url: string,
-  strictMode: boolean
+  strictMode: boolean,
 ): Promise<string | null> {
   if (!isNonEmptyString(url)) {
     return "URL is empty";

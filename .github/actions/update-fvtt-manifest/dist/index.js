@@ -31834,17 +31834,6 @@ module.exports = parseParams
 /******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
@@ -31854,13 +31843,65 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(9896);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4708);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3802);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_2__);
+
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(9896);
+var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.11.1/node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(4708);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@6.0.0/node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(3802);
+;// CONCATENATED MODULE: ./.github/src/helpers.ts
+function isString(value) {
+    return typeof value === "string";
+}
+function isNonEmptyString(value) {
+    return ((isString(value) && value === null) ||
+        value === undefined ||
+        value.trim() === "");
+}
+function isParseableUrl(url) {
+    try {
+        new URL(url);
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+function isHttpsUrl(url) {
+    return url.startsWith("https://");
+}
+async function isReachable(url) {
+    try {
+        const response = await fetch(url);
+        return response.ok;
+    }
+    catch (e) {
+        return false;
+    }
+}
+async function checkUrl(url, strictMode) {
+    if (!isNonEmptyString(url)) {
+        return "URL is empty";
+    }
+    if (!isParseableUrl(url)) {
+        return "URL is not parseable";
+    }
+    if (!isHttpsUrl(url)) {
+        return "URL is not HTTPS";
+    }
+    if (strictMode && !(await isReachable(url))) {
+        return "URL is not reachable";
+    }
+    return null;
+}
+function isTruthyString(value) {
+    return (isString(value) &&
+        ["true", "yes", "t", "y", "1"].includes(value.toLowerCase()));
+}
+
+;// CONCATENATED MODULE: ./.github/actions/update-fvtt-manifest/src/index.ts
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // IF YOU UPDATE THIS ACTION, CREATE A NEW TAG AND UPDATE THE REFERENCE IN THE
 // CI/CD WORKFLOW
@@ -31868,30 +31909,31 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 
+
 // fetch inputs
-const manifestPath = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("manifest_path", {
+const manifestPath = (0,core.getInput)("manifest_path", {
     required: true,
 });
-const releaseToBucket = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("release_to_bucket", { required: true });
-const tag = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("tag", { required: true });
-const doSpaceName = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("do_space_name", { required: true });
-const doSpaceRegion = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("do_space_region", { required: true });
+const releaseToBucket = isTruthyString((0,core.getInput)("release_to_bucket", { required: true }));
+const tag = (0,core.getInput)("tag", { required: true });
+const doSpaceName = (0,core.getInput)("do_space_name", { required: true });
+const doSpaceRegion = (0,core.getInput)("do_space_region", { required: true });
 // parse manifest as JSON
-const manifest = JSON.parse(fs__WEBPACK_IMPORTED_MODULE_0___default().readFileSync(manifestPath, "utf8"));
+const manifest = JSON.parse(external_fs_default().readFileSync(manifestPath, "utf8"));
 const { id, version } = manifest;
-const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_2__.context.repo;
+const { owner, repo } = github.context.repo;
 // sanity check
 if (tag !== `v${version}`) {
     throw new Error(`Manifest version (v${version}) does not match tag (${tag})`);
 }
-if (["true", "1", "yes", "y", "t"].includes(releaseToBucket.toLowerCase())) {
+if (releaseToBucket) {
     manifest.download = `https://${doSpaceName}.${doSpaceRegion}.cdn.digitaloceanspaces.com/${id}/releases/${tag}/${id}.zip`;
 }
 else {
     manifest.download = `https://github.com/${owner}/${repo}/releases/download/${tag}/${id}.zip`;
 }
-(0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.info)(`Download URL: ${manifest.download}`);
-fs__WEBPACK_IMPORTED_MODULE_0___default().writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+(0,core.info)(`Download URL: ${manifest.download}`);
+external_fs_default().writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
 })();
 

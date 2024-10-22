@@ -191,11 +191,11 @@ jobs:
       - name: Check formatting
         run: pnpm run format:check
 
-      - name: Build Package
+      - name: Build
         run: pnpm run build
 
       - name: Package
-        uses: lumphammer/gh-actions/.github/actions/validate-fvtt-package@main
+        uses: lumphammer/gh-actions/.github/actions/package@main
 
       - name: Upload package file
         uses: actions/upload-artifact@v4

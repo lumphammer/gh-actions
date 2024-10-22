@@ -3,8 +3,8 @@
 # CI/CD WORKFLOW
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-name: Publish
-description: 'Publish a release'
+name: Publish GitHub release
+description: Publish GitHub release
 inputs:
   version:
     description: 'The version to publish'

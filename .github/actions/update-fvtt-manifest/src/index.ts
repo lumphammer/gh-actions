@@ -12,8 +12,11 @@ import { isTruthyString } from "../../../src/helpers";
 const manifestPath = getInput("manifest_path", {
   required: true,
 });
+
+const foo = 5;
+
 const releaseToBucket = isTruthyString(
-  getInput("release_to_bucket", { required: true })
+  getInput("release_to_bucket", { required: true }),
 );
 const tag = getInput("tag", { required: true });
 

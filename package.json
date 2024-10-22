@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build-actions": "ncc build ./.github/actions/update-manifest/src/index.ts -o ./.github/actions/update-manifest/dist"
+    "build-actions": ""
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",

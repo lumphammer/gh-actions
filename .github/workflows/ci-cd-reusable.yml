@@ -192,7 +192,10 @@ jobs:
         run: pnpm run format:check
 
       - name: Build Package
-        run: pnpm package
+        run: pnpm run build
+
+      - name: Package
+        uses: lumphammer/gh-actions/.github/actions/validate-fvtt-package@main
 
       - name: Upload package file
         uses: actions/upload-artifact@v4

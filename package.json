@@ -1,4 +1,5 @@
 {
+  "name": "@lumphammer/gh-actions",
   "scripts": {
     "lint:check": "eslint .github",
     "build-actions": "./scripts/build-actions.sh"
@@ -6,6 +7,7 @@
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
+    "@lumphammer/gh-actions-helpers": "workspace:*",
     "@types/node": "^22.7.6",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@vercel/ncc": "^0.38.2",

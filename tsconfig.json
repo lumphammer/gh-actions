@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*", ".github/**/*"],
+  "include": ["src/**/*", ".github/**/*", "packages/helpers/**/*"],
   "compilerOptions": {
     "lib": ["ES6", "ES2022", "ES2023.Array"],
     "target": "ES2019",

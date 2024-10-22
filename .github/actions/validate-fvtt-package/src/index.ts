@@ -10,7 +10,7 @@ import {
   checkUrl,
   isNonEmptyString,
   isTruthyString,
-} from "../../../src/helpers";
+} from "@lumphammer/gh-actions-helpers";
 
 // /////////////////////////////////////////////////////////////////////////////
 // fetch inputs

@@ -7,7 +7,7 @@
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
-    "@lumphammer/gh-actions-helpers": "workspace:*",
+    "@lumphammer/shared-fvtt-bits": "workspace:*",
     "@types/node": "^22.7.6",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@vercel/ncc": "^0.38.2",

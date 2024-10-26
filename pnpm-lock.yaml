@@ -14,9 +14,9 @@ importers:
       '@actions/github':
         specifier: ^6.0.0
         version: 6.0.0
-      '@lumphammer/gh-actions-helpers':
+      '@lumphammer/shared-fvtt-bits':
         specifier: workspace:*
-        version: link:packages/helpers
+        version: link:packages/shared-fvtt-bits
       '@types/node':
         specifier: ^22.7.6
         version: 22.7.6
@@ -53,8 +53,6 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
-
-  packages/helpers: {}
 
   packages/shared-fvtt-bits:
     dependencies:

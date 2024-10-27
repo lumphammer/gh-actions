@@ -195,7 +195,7 @@ jobs:
         run: pnpm run build
 
       - name: Package
-        uses: lumphammer/gh-actions/.github/actions/package@main
+        uses: lumphammer/gh-actions/.github/actions/create-fvtt-package-zip@main
 
       - name: Upload package file
         uses: actions/upload-artifact@v4

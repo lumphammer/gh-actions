@@ -3,30 +3,18 @@
 # CI/CD WORKFLOW
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-name: Validate FVTT package
-description: 'Sanity checks for a FVTT package'
+name: Create FVTT package zip
+description: 'Zips up your build folder'
 inputs:
   manifest_path:
     description: 'The name of the manifest file'
     required: true
-  strict_mode:
-    description: >
-      If this is set to "true", the action will fail if any maniofest URLs are
-      not reachable.
+  package_path:
+    description: 'The name of the package folder'
     required: true
-  release_to_bucket:
-    description: 'Publish to bucket (yes or no)'
+  build_path:
+    description: 'The name of the build folder'
     required: true
-  tag:
-    description: 'The tag push that triggered this release'
-    required: true
-  do_space_name:
-    description: 'The name of the DO space'
-    required: true
-  do_space_region:
-    description: 'The region of the DO space'
-    required: true
-
 
 runs:
   using: "node20"

@@ -16,10 +16,10 @@ jobs:
       - run: pnpm run lint:check
       - run: pnpm run typecheck
       - run: |
-          before = find .github/actions -type f -name "*.js" -exec md5sum {} + | awk '{print $1}' | sort | md5sum
+          before=$(find .github/actions -type f -name "*.js" -exec md5sum {} + | awk '{print $1}' | sort | md5sum)
           echo "before: $before"
-          pnpmk run build-actions
-          after = find .github/actions -type f -name "*.js" -exec md5sum {} + | awk '{print $1}' | sort | md5sum
+          pnpm run build-actions
+          after=$(find .github/actions -type f -name "*.js" -exec md5sum {} + | awk '{print $1}' | sort | md5sum)
           echo "after: $after"
           if [ "$before" != "$after" ]; then
             echo "pn run build-actions caused a change - you probably haven't updated the action files"

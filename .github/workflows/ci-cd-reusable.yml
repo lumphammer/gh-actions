@@ -206,7 +206,7 @@ jobs:
           mkdir -p ${{ env.PACKAGE_PATH }}
           cd ${{inputs.build_path}}
           zip -r ${{github.workspace}}/${{ env.PACKAGE_PATH }}/${{ env.PACKAGE_FILE_NAME }} .
-          ll ${{github.workspace}}/${{ env.PACKAGE_PATH }}/${{ env.PACKAGE_FILE_NAME }}
+          ls -l ${{github.workspace}}/${{ env.PACKAGE_PATH }}/${{ env.PACKAGE_FILE_NAME }}
 
       - name: Upload package file
         uses: actions/upload-artifact@v4

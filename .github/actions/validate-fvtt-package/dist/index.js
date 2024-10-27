@@ -25635,100 +25635,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 1581:
-/***/ ((module, __webpack_exports__, __nccwpck_require__) => {
-
-"use strict";
-__nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-__nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(9896);
-/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4708);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _src_helpers__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(3655);
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// IF YOU UPDATE THIS ACTION, CREATE A NEW TAG AND UPDATE THE REFERENCE IN THE
-// CI/CD WORKFLOW
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-// /////////////////////////////////////////////////////////////////////////////
-// fetch inputs
-const fvttManifestPath = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("manifest_path", {
-    required: true,
-});
-const strictMode = (0,_src_helpers__WEBPACK_IMPORTED_MODULE_2__/* .isTruthyString */ .WK)((0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("strict_mode", { required: true }));
-const releaseToBucket = (0,_src_helpers__WEBPACK_IMPORTED_MODULE_2__/* .isTruthyString */ .WK)((0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("release_to_bucket", { required: true }));
-const tag = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("tag", { required: true });
-const doSpaceName = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("do_space_name", { required: true });
-const doSpaceRegion = (0,_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput)("do_space_region", { required: true });
-// /////////////////////////////////////////////////////////////////////////////
-// parse manifests as JSON
-const fvttManifest = JSON.parse(fs__WEBPACK_IMPORTED_MODULE_0___default().readFileSync(fvttManifestPath, "utf8"));
-const nodeManifest = JSON.parse(fs__WEBPACK_IMPORTED_MODULE_0___default().readFileSync("package.json", "utf8"));
-// list of errors to return
-const errors = [];
-// /////////////////////////////////////////////////////////////////////////////
-// package name
-if (nodeManifest.name !== `${fvttManifest.id}-fvtt`) {
-    errors.push(`Package ID/name mismatch: FVTT manifest at ${fvttManifestPath} ID (${fvttManifest.id}) does not match package.json name without "-fvtt" suffix (${nodeManifest.name})`);
-}
-// /////////////////////////////////////////////////////////////////////////////
-// version match between manifests and tag (if pushing a tag)
-if (fvttManifest.version !== nodeManifest.version) {
-    errors.push(`Version mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match package.json version (${nodeManifest.version})`);
-}
-if ((0,_src_helpers__WEBPACK_IMPORTED_MODULE_2__/* .isNonEmptyString */ .uI)(tag)) {
-    if (`v${fvttManifest.version}` !== tag) {
-        errors.push(`Tag mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match tag (${tag})`);
-    }
-    if (`v${nodeManifest.version}` !== tag) {
-        errors.push(`Tag mismatch: package.json version (${nodeManifest.version}) does not match tag (${tag})`);
-    }
-}
-// /////////////////////////////////////////////////////////////////////////////
-// basic checks on all URLS
-const urlKeys = ["url", "manifest", "download", "changelog", "readme", "bugs"];
-for (const key of urlKeys) {
-    const url = fvttManifest[key];
-    const urlError = await (0,_src_helpers__WEBPACK_IMPORTED_MODULE_2__/* .checkUrl */ .CU)(url, strictMode);
-    if (urlError) {
-        errors.push(`${fvttManifestPath}: \`${key}\` (${url}): ${urlError}`);
-    }
-}
-// /////////////////////////////////////////////////////////////////////////////
-// media
-if (!Array.isArray(fvttManifest.media)) {
-    errors.push(`${fvttManifestPath}: media is not an array`);
-}
-const mediaTypes = ["cover", "setup"];
-for (const mediaType of mediaTypes) {
-    const media = fvttManifest.media.find((m) => m.type === mediaType);
-    if (!media) {
-        errors.push(`Foundry manifest: media does not contain a ${mediaType}`);
-    }
-    const mediaError = await (0,_src_helpers__WEBPACK_IMPORTED_MODULE_2__/* .checkUrl */ .CU)(media.url, strictMode);
-    if (mediaError) {
-        errors.push(`${fvttManifestPath}: ${mediaType} media URL (${media.url}): ${mediaError}`);
-    }
-}
-// /////////////////////////////////////////////////////////////////////////////
-// check that manifest and download URLs are correct for DO bucket
-if (releaseToBucket) {
-    const downloadUrl = fvttManifest.download;
-    const downloadError = await (0,_src_helpers__WEBPACK_IMPORTED_MODULE_2__/* .checkUrl */ .CU)(downloadUrl, strictMode);
-    if (downloadError) {
-        errors.push(`${fvttManifestPath}: download URL (${downloadUrl}): ${downloadError}`);
-    }
-}
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } }, 1);
-
-/***/ }),
-
-/***/ 3655:
+/***/ 7666:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
@@ -25747,10 +25654,10 @@ function isNonEmptyString(value) {
 }
 function isParseableUrl(url) {
     try {
-        new URL(url);
+        void new URL(url);
         return true;
     }
-    catch (e) {
+    catch {
         return false;
     }
 }
@@ -25762,7 +25669,7 @@ async function isReachable(url) {
         const response = await fetch(url);
         return response.ok;
     }
-    catch (e) {
+    catch {
         return false;
     }
 }
@@ -25786,6 +25693,99 @@ function isTruthyString(value) {
         ["true", "yes", "t", "y", "1"].includes(value.toLowerCase()));
 }
 
+
+/***/ }),
+
+/***/ 1581:
+/***/ ((module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+__nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(4708);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9896);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(7666);
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// IF YOU UPDATE THIS ACTION, CREATE A NEW TAG AND UPDATE THE REFERENCE IN THE
+// CI/CD WORKFLOW
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+// /////////////////////////////////////////////////////////////////////////////
+// fetch inputs
+const fvttManifestPath = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("manifest_path", {
+    required: true,
+});
+const strictMode = (0,_functions__WEBPACK_IMPORTED_MODULE_2__/* .isTruthyString */ .WK)((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("strict_mode", { required: true }));
+const releaseToBucket = (0,_functions__WEBPACK_IMPORTED_MODULE_2__/* .isTruthyString */ .WK)((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("release_to_bucket", { required: true }));
+const tag = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("tag", { required: true });
+// const doSpaceName = getInput("do_space_name", { required: true });
+// const doSpaceRegion = getInput("do_space_region", { required: true });
+// /////////////////////////////////////////////////////////////////////////////
+// parse manifests as JSON
+const fvttManifest = JSON.parse(fs__WEBPACK_IMPORTED_MODULE_1___default().readFileSync(fvttManifestPath, "utf8"));
+const nodeManifest = JSON.parse(fs__WEBPACK_IMPORTED_MODULE_1___default().readFileSync("package.json", "utf8"));
+// list of errors to return
+const errors = [];
+// /////////////////////////////////////////////////////////////////////////////
+// package name
+if (nodeManifest.name !== `${fvttManifest.id}-fvtt`) {
+    errors.push(`Package ID/name mismatch: FVTT manifest at ${fvttManifestPath} ID (${fvttManifest.id}) does not match package.json name without "-fvtt" suffix (${nodeManifest.name})`);
+}
+// /////////////////////////////////////////////////////////////////////////////
+// version match between manifests and tag (if pushing a tag)
+if (fvttManifest.version !== nodeManifest.version) {
+    errors.push(`Version mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match package.json version (${nodeManifest.version})`);
+}
+if ((0,_functions__WEBPACK_IMPORTED_MODULE_2__/* .isNonEmptyString */ .uI)(tag)) {
+    if (`v${fvttManifest.version}` !== tag) {
+        errors.push(`Tag mismatch: FVTT manifest at ${fvttManifestPath} version (${fvttManifest.version}) does not match tag (${tag})`);
+    }
+    if (`v${nodeManifest.version}` !== tag) {
+        errors.push(`Tag mismatch: package.json version (${nodeManifest.version}) does not match tag (${tag})`);
+    }
+}
+// /////////////////////////////////////////////////////////////////////////////
+// basic checks on all URLS
+const urlKeys = ["url", "manifest", "download", "changelog", "readme", "bugs"];
+for (const key of urlKeys) {
+    const url = fvttManifest[key];
+    const urlError = await (0,_functions__WEBPACK_IMPORTED_MODULE_2__/* .checkUrl */ .CU)(url, strictMode);
+    if (urlError) {
+        errors.push(`${fvttManifestPath}: \`${key}\` (${url}): ${urlError}`);
+    }
+}
+// /////////////////////////////////////////////////////////////////////////////
+// media
+if (!Array.isArray(fvttManifest.media)) {
+    errors.push(`${fvttManifestPath}: media is not an array`);
+}
+const mediaTypes = ["cover", "setup"];
+for (const mediaType of mediaTypes) {
+    const media = fvttManifest.media.find((m) => m.type === mediaType);
+    if (!media) {
+        errors.push(`Foundry manifest: media does not contain a ${mediaType}`);
+    }
+    const mediaError = await (0,_functions__WEBPACK_IMPORTED_MODULE_2__/* .checkUrl */ .CU)(media.url, strictMode);
+    if (mediaError) {
+        errors.push(`${fvttManifestPath}: ${mediaType} media URL (${media.url}): ${mediaError}`);
+    }
+}
+// /////////////////////////////////////////////////////////////////////////////
+// check that manifest and download URLs are correct for DO bucket
+if (releaseToBucket) {
+    const downloadUrl = fvttManifest.download;
+    const downloadError = await (0,_functions__WEBPACK_IMPORTED_MODULE_2__/* .checkUrl */ .CU)(downloadUrl, strictMode);
+    if (downloadError) {
+        errors.push(`${fvttManifestPath}: download URL (${downloadUrl}): ${downloadError}`);
+    }
+}
+
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } }, 1);
 
 /***/ }),
 

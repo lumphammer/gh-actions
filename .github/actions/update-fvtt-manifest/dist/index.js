@@ -31844,14 +31844,14 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(9896);
-var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.11.1/node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(4708);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@6.0.0/node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(3802);
-;// CONCATENATED MODULE: ./.github/src/helpers.ts
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(9896);
+var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
+;// CONCATENATED MODULE: ./.github/actions/functions.ts
 function isString(value) {
     return typeof value === "string";
 }
@@ -31862,10 +31862,10 @@ function isNonEmptyString(value) {
 }
 function isParseableUrl(url) {
     try {
-        new URL(url);
+        void new URL(url);
         return true;
     }
-    catch (e) {
+    catch {
         return false;
     }
 }
@@ -31877,7 +31877,7 @@ async function isReachable(url) {
         const response = await fetch(url);
         return response.ok;
     }
-    catch (e) {
+    catch {
         return false;
     }
 }

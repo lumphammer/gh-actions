@@ -1,0 +1,27 @@
+name: CI
+
+on: push
+
+jobs:
+  lint-and-typecheck:
+    name: Lint and typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: pnpm install
+      - run: pnpm run lint:check
+      - run: pnpm run typecheck
+      - run: |
+          before = find .github/actions -type f -name "*.js" -exec md5sum {} + | awk '{print $1}' | sort | md5sum
+          echo "before: $before"
+          pnpmk run build-actions
+          after = find .github/actions -type f -name "*.js" -exec md5sum {} + | awk '{print $1}' | sort | md5sum
+          echo "after: $after"
+          if [ "$before" != "$after" ]; then
+            echo "pn run build-actions caused a change - you probably haven't updated the action files"
+            exit 1
+          fi
+

@@ -6,11 +6,7 @@
 import { getInput } from "@actions/core";
 import fs from "fs";
 
-import {
-  checkUrl,
-  isNonEmptyString,
-  isTruthyString,
-} from "@lumphammer/gh-actions-helpers";
+import { checkUrl, isNonEmptyString, isTruthyString } from "../../functions";
 
 // /////////////////////////////////////////////////////////////////////////////
 // fetch inputs

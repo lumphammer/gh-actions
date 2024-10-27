@@ -2,7 +2,8 @@
   "name": "@lumphammer/gh-actions",
   "scripts": {
     "lint:check": "eslint .github",
-    "build-actions": "./scripts/build-actions.sh"
+    "build-actions": "./scripts/build-actions.sh",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",

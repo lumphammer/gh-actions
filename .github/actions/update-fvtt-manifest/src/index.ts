@@ -7,7 +7,7 @@ import { getInput, info } from "@actions/core";
 import { context } from "@actions/github";
 import fs from "fs";
 
-import { isTruthyString } from "@lumphammer/gh-actions-helpers";
+import { isTruthyString } from "../../functions";
 
 // fetch inputs
 const manifestPath = getInput("manifest_path", {

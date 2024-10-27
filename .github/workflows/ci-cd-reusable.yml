@@ -204,7 +204,7 @@ jobs:
       - name: Create FVTT package zip
         run: |
           mkdir -p ${{ env.PACKAGE_PATH }}
-          cd build ${{github.workspace}}
+          cd ${{inputs.build_path}}
           zip -r ${{github.workspace}}/${{ env.PACKAGE_PATH }}/${{ env.PACKAGE_FILE_NAME }} .
           ll ${{github.workspace}}/${{ env.PACKAGE_PATH }}/${{ env.PACKAGE_FILE_NAME }}
 

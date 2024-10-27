@@ -12,5 +12,11 @@ for input in $inputs; do
   src_dir=$(dirname $input)
   output_dir=$(dirname $src_dir)/dist
   echo -e "---\nInput file: ${input}\nOutput dir: ${output_dir}"
-  npx ncc build ${input} -o ${output_dir}
+  npx esbuild ${input} \
+    --bundle \
+    --format=esm \
+    --target=node20 \
+    --platform=node \
+    --minify \
+    --outdir=${output_dir}
 done

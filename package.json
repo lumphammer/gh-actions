@@ -9,7 +9,6 @@
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
     "@lumphammer/shared-fvtt-bits": "workspace:*",
-    "@types/archiver": "^6.0.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.7.6",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
@@ -27,7 +26,6 @@
   },
   "packageManager": "pnpm@9.5.0-beta.3+sha512.8b0c4d7fd9937d73f06ad284e681ddfd0f08b8f792a4f854a3ea24d1c7ade57dfe952ce88ed174d57da694e8323f0bb5a25011f780ed2787759c647b35263fa1",
   "dependencies": {
-    "archiver": "^7.0.1",
     "fs-extra": "^11.2.0"
   }
 }

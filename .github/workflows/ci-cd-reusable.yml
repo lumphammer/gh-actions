@@ -29,6 +29,10 @@ on:
           set the `do_space_name` and `do_space_region` inputs to override the
           defaults (`lumphammer-fvtt-packages` and `lon1` respectively).
 
+      runs_on:
+        required: false
+        type: string
+        default: "ubuntu-latest"
       build_path:
         required: false
         type: string
@@ -119,7 +123,7 @@ env:
 jobs:
   parse_tag:
     name: Parse tag
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs_on }}
     outputs:
       tag_version: ${{ steps.get_tag_version.outputs.group1 }}
       tag_prerelease: ${{ steps.get_tag_version.outputs.group2 }}
@@ -137,7 +141,7 @@ jobs:
 
   instrument_parsed_tag:
     name: Instrument parsed tag
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs_on }}
     needs: parse_tag
     steps:
       - name: Instrument tags capture
@@ -147,7 +151,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs_on }}
     needs: parse_tag
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -245,7 +249,7 @@ jobs:
       - build
       - parse_tag
     if: needs.parse_tag.outputs.tag_version != '' && inputs.release_to_bucket
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs_on }}
     permissions:
       contents: write
     steps:
@@ -308,7 +312,7 @@ jobs:
       - build
       - parse_tag
       - upload-to-bucket
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs_on }}
     permissions:
       contents: write
     if: needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
@@ -331,7 +335,7 @@ jobs:
       - build
       - parse_tag
       - upload-to-bucket
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs_on }}
     permissions:
       contents: write
     if: needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
@@ -355,7 +359,7 @@ jobs:
       - publish-release
       - parse_tag
     if: needs.publish-release.result == 'success' && inputs.foundry_package_release
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs_on }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 

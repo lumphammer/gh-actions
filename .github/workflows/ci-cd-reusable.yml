@@ -315,7 +315,7 @@ jobs:
     runs-on: ${{ inputs.runs_on }}
     permissions:
       contents: write
-    if: needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
+    if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
@@ -338,7 +338,7 @@ jobs:
     runs-on: ${{ inputs.runs_on }}
     permissions:
       contents: write
-    if: needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
+    if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 

@@ -16,7 +16,7 @@ on:
         type: boolean
         description: >
           Whether to release to Foundry - only do this for packages that have
-          been submitted to and acceptred by Foundry. If this is set to `true`,
+          been submitted to and accepted by Foundry. If this is set to `true`,
           the `FOUNDRY_PACKAGE_RELEASE_TOKEN` secret must be set. You can also
           set the `foundry_package_release_dry_run` input to `true` to test
           release without actually releasing.

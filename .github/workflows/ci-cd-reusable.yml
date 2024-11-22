@@ -185,7 +185,7 @@ jobs:
         uses: lumphammer/gh-actions/.github/actions/update-manifest@2024-10-18.1
         with:
           manifest_path: ${{ env.PUBLIC_PATH }}/${{ env.MANIFEST_FILE_NAME }}
-          release_to_bucket: yes
+          release_to_bucket: ${{ inputs.release_to_bucket }}
           tag: ${{ needs.parse_tag.outputs.tag_version }}
           do_space_name: ${{ inputs.do_space_name }}
           do_space_region: ${{ inputs.do_space_region }}

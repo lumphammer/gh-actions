@@ -306,6 +306,29 @@ jobs:
           source: .
           out_dir: ${{inputs.package_id}}/releases/latest
 
+  instrumentation:
+    name: Instrumentation
+    needs:
+      - build
+      - parse_tag
+      - upload-to-bucket
+    runs-on: ${{ inputs.runs_on }}
+    permissions:
+      contents: write
+    if: always()
+    steps:
+      - run: |
+          echo "needs.parse_tag.outputs.tag_version: ${{ needs.parse_tag.outputs.tag_version }}"
+          echo "needs.parse_tag.outputs.tag_prerelease: ${{ needs.parse_tag.outputs.tag_prerelease }}"
+          echo "needs.upload-to-bucket.result: ${{ needs.upload-to-bucket.result }}"
+          echo "needs.parse_tag.outputs.tag_version != '': ${{ needs.parse_tag.outputs.tag_version != '' }}"
+          echo "needs.parse_tag.outputs.tag_prerelease != '': ${{ needs.parse_tag.outputs.tag_prerelease != '' }}"
+          echo "needs.upload-to-bucket.result == 'success': ${{ needs.upload-to-bucket.result == 'success' }}"
+          echo "needs.upload-to-bucket.result == 'skipped': ${{ needs.upload-to-bucket.result == 'skipped' }}"
+          echo "needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped': ${{ needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped' }}"
+          echo "needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped'): ${{ needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped') }}"
+
+
   publish-prerelease:
     name: Publish prerelease
     needs:

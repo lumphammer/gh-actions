@@ -370,7 +370,7 @@ jobs:
     needs:
       - publish-release
       - parse_tag
-    if: needs.publish-release.result == 'success' && inputs.foundry_package_release
+    if: always() && needs.publish-release.result == 'success' && inputs.foundry_package_release
     runs-on: ${{ inputs.runs_on }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4

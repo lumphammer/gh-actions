@@ -357,6 +357,7 @@ jobs:
     needs:
       - publish-release
       - parse_tag
+    if: always()
     runs-on: ${{ inputs.runs_on }}
     steps:
       - run: |

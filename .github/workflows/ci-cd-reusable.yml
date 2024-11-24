@@ -352,6 +352,17 @@ jobs:
           manifest_url: ${{needs.parse_tag.outputs.manifest_url}}
           manifest_file_name: ${{env.MANIFEST_FILE_NAME}}
 
+  instrument-publish-to-foundry:
+    name: Instrument publish to Foundry
+    needs:
+      - publish-release
+      - parse_tag
+    runs-on: ${{ inputs.runs_on }}
+    steps:
+      - run: |
+          echo "needs.publish-release.result: ${{needs.publish-release.result}}"
+          echo "inputs.foundry_package_release: ${{inputs.foundry_package_release}}"
+          echo "needs.publish-release.result == 'success' && inputs.foundry_package_release: ${{needs.publish-release.result == 'success' && inputs.foundry_package_release}}"
 
   publish-to-foundry:
     name: Publish to Foundry

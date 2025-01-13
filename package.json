@@ -11,18 +11,18 @@
     "@lumphammer/shared-fvtt-bits": "workspace:*",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.5",
-    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
     "chalk": "^5.4.1",
     "esbuild": "^0.24.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-react": "^1.1.7",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a",
   "dependencies": {

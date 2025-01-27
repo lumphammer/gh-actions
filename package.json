@@ -10,7 +10,7 @@
     "@actions/github": "^6.0.0",
     "@lumphammer/shared-fvtt-bits": "workspace:*",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.10.9",
+    "@types/node": "^22.10.10",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "chalk": "^5.4.1",
     "esbuild": "^0.24.2",

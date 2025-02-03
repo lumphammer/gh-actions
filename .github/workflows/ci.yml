@@ -11,9 +11,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: corepack --version
       # see https://github.com/nodejs/corepack/issues/612
       - run: npm i -g corepack@latest
+      - run: corepack --version
       - run: corepack enable
       - run: pnpm install
       - run: pnpm run lint:check

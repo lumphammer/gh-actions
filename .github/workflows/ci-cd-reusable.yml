@@ -125,19 +125,30 @@ jobs:
     name: Parse tag
     runs-on: ${{ inputs.runs_on }}
     outputs:
-      tag_version: ${{ steps.get_tag_version.outputs.group1 }}
-      tag_prerelease: ${{ steps.get_tag_version.outputs.group2 }}
-      manifest_url: ${{inputs.release_to_bucket && env.DOWNLOAD_BASE_DO || env.DOWNLOAD_BASE_GH}}/${{steps.get_tag_version.outputs.group1}}/${{inputs.manifest_file_name}}
+      tag_version: ${{ steps.get_tag_version.outputs.group1 || steps.get_tag_version_generational.outputs.group2 }}
+      tag_prerelease: ${{ steps.get_tag_version.outputs.group2 || steps.get_tag_version_generational.outputs.group1 }}
+      manifest_url: ${{inputs.release_to_bucket && env.DOWNLOAD_BASE_DO || env.DOWNLOAD_BASE_GH}}/${{steps.get_tag_version.outputs.group1 || steps.get_tag_version_generational.outputs.group2}}/${{inputs.manifest_file_name}}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - name: Get tag versions
-        if: github.ref_type == 'tag'
+      # old style: three-part semver with optional prerelease suffix
+      - name: Get tag version (full semver)
         id: get_tag_version
+        if: github.ref_type == 'tag'
         uses: actions-ecosystem/action-regex-match@v2
         with:
           regex: '^refs/tags\/(v\d+\.\d+\.\d+(?:$|(-[a-z0-9._-]+)))'
           text: ${{ github.ref }}
+
+      # new style: generational with optional prerelease prefix
+      - name: Get tag version (generational)
+        id: get_tag_version_generational
+        if: github.ref_type == 'tag'
+        uses: actions-ecosystem/action-regex-match@v2
+        with:
+          regex: '^refs/tags\/(prerelease-)?(v\d+\.\d+)$'
+          text: ${{ github.ref }}
+
 
   instrument_parsed_tag:
     name: Instrument parsed tag

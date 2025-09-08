@@ -8,14 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 22.19.0
-      # see https://github.com/nodejs/corepack/issues/612
-      - run: npm i -g corepack@latest
-      - run: corepack --version
-      - run: corepack enable
-      - run: pnpm install
+          run_install: true
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: '.nvmrc'
       - run: pnpm run lint:check
       - run: pnpm run typecheck
       - run: |

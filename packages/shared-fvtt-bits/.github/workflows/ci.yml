@@ -4,22 +4,53 @@ on:
   - push
   - pull_request
 
+# env:
+#   MANIFEST_FILE_NAME: ${{ inputs.manifest_file_name }}
+#   PUBLIC_PATH: ${{ inputs.public_path }}
+#   PACKAGE_FILE_NAME: ${{ inputs.package_file_name }}
+#   PACKAGE_PATH: ${{ inputs.package_path }}
+#   DOWNLOAD_BASE: "https://github.com/${{github.repository}}/releases/download"
 
 jobs:
+  # parse_tag:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     tag_version: ${{ steps.get_tag_version.outputs.group1 }}
+  #     tag_prerelease: ${{ steps.get_tag_version.outputs.group2 }}
+  #   steps:
+  #     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+  #     - name: Get tag versions
+  #       if: github.ref_type == 'tag'
+  #       id: get_tag_version
+  #       uses: actions-ecosystem/action-regex-match@v2
+  #       with:
+  #         regex: '^refs/tags\/(v\d+\.\d+\.\d+(?:$|(-[a-z0-9._-]+)))'
+  #         text: ${{ github.ref }}
+
+  # instrument_parse_tag:
+  #   runs-on: ubuntu-latest
+  #   needs: parse_tag
+  #   steps:
+  #     - name: Instrument tags capture
+  #       run: |
+  #         echo "tag_version: ${{ needs.parse_tag.outputs.tag_version }}"
+  #         echo "tag_prerelease: ${{ needs.parse_tag.outputs.tag_prerelease }}"
 
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          # install here so setup-node can see a lockfile
+          run_install: true
+
+      - uses: actions/setup-node@v5
         with:
           node-version-file: '.nvmrc'
-
-      - name: Activate pnpm
-        run: |
-          corepack enable
 
       - name: Instrumentation
         run: |
@@ -28,13 +59,7 @@ jobs:
           cat tsconfig.json
           export
           node --version
-          pnpm --version
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Instrument tsc version
-        run: npx tsc --version
+          npx tsc --version
 
       - name: Typecheck
         run: pnpm run typecheck

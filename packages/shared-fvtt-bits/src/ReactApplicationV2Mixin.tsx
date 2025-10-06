@@ -1,21 +1,26 @@
-import { StrictMode } from "react";
+import { DeepPartial } from "fvtt-types/utils";
+import { ReactNode, StrictMode } from "react";
 import { createRoot, Root } from "react-dom/client";
 
-import { FoundryAppV2Context } from "./FoundryAppV2Context";
-import { Constructor, RecursivePartial, Render } from "./types";
+import { FoundryAppContext } from "./FoundryAppContext";
+import { Constructor } from "./types";
+
+import ApplicationV2 = foundry.applications.api.ApplicationV2;
+type RenderOptions = foundry.applications.api.ApplicationV2.RenderOptions;
 
 // so Constructor<Application> is any class which is an Application
-type ApplicationV2Constuctor =
-  Constructor<foundry.applications.api.ApplicationV2>;
+type ApplicationV2Constructor = Constructor<ApplicationV2>;
 
 /**
  * Wrap an existing Foundry Application class in this Mixin to override the
- * normal rednering behaviour and and use React instead.
+ * normal rendering behaviour and and use React instead.
+ *
+ * See MIXINS.md.
  */
-export function ReactApplicationV2Mixin<TBase extends ApplicationV2Constuctor>(
+export function ReactApplicationV2Mixin<TBase extends ApplicationV2Constructor>(
   /**
    * Name to be attached to the created class. This is needed because minified
-   * classes have weird names which can break foundry when thney get used as
+   * classes have weird names which can break foundry when they get used as
    * HTML ids.
    */
   name: string,
@@ -23,22 +28,12 @@ export function ReactApplicationV2Mixin<TBase extends ApplicationV2Constuctor>(
    * The base class.
    */
   Base: TBase,
-  /** A function which will be given an *instance* of Base and expected to
-   * return some JSX.
+  /**
+   * Render method - should return some JSX.
    */
-  render: Render<TBase>,
-) {
+  render: () => ReactNode,
+): TBase {
   class Reactified extends Base {
-    static DEFAULT_OPTIONS: RecursivePartial<foundry.applications.types.ApplicationConfiguration> =
-      {
-        ...foundry.applications.api.ApplicationV2.DEFAULT_OPTIONS,
-        window: {
-          ...foundry.applications.api.ApplicationV2.DEFAULT_OPTIONS.window,
-          frame: true,
-          title: name,
-        },
-      };
-
     // PROPERTIES
 
     /**
@@ -57,7 +52,7 @@ export function ReactApplicationV2Mixin<TBase extends ApplicationV2Constuctor>(
 
     // From Atropos: _renderFrame only occurs once and is the most natural point
     // (given the current API) to bind the content div to your react component.
-    async _renderFrame(options: unknown) {
+    override async _renderFrame(options: DeepPartial<RenderOptions>) {
       const element = await super._renderFrame(options);
       const target = this.hasFrame
         ? element.querySelector(".window-content")
@@ -68,25 +63,47 @@ export function ReactApplicationV2Mixin<TBase extends ApplicationV2Constuctor>(
       return element;
     }
 
+    override async close(options?: DeepPartial<ApplicationV2.ClosingOptions>) {
+      // we're inverting the normal order of inherited calls here. the class
+      // produced by this mixin is effectively a subclass of the class passed
+      // in, but we want a way for the base class to determine whether we
+      // actually unmount the app etc. so we call the base class's close method
+      // first, and if it doesn't throw, we assume it's okay to unmount our
+      // react tree.
+      try {
+        await super.close(options);
+        if (this.reactRoot) {
+          this.reactRoot.unmount();
+          this.reactRoot = undefined;
+        }
+        // eslint-disable-next-line unused-imports/no-unused-vars
+      } catch (e: any) {
+        // if it does throw, we don;t want that to reach the console, so we do
+        // nothing. This is an async function to that's equivalent to returning
+        // a promise that resolves to undefined.
+      }
+      return this;
+    }
+
     // _renderHTML is the semantically appropriate place to render updates to
     // the HTML of the app... or in our case, to ask to react to refresh.
     override _renderHTML() {
       const content = (
         <StrictMode>
-          <FoundryAppV2Context.Provider
+          <FoundryAppContext.Provider
             value={this}
             key={"FoundryAppContextProvider"}
           >
-            {render(
-              this as TBase extends Constructor<infer T2> ? T2 : TBase,
-              this.serial,
-            )}
-          </FoundryAppV2Context.Provider>
+            {render()}
+          </FoundryAppContext.Provider>
         </StrictMode>
       );
 
       this.reactRoot?.render(content);
       this.serial += 1;
+      // types expect a promise but we don't need to wait for the render to
+      // complete
+      return Promise.resolve();
     }
 
     // This override should be optional eventually but rn is needed to prevent

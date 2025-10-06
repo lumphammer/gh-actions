@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
-import yargs, { ArgumentsCamelCase } from "yargs";
+import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 import { BootArgs, FoundryConfig, Manifest, TaskArgs } from "./types";
@@ -22,7 +22,7 @@ export async function boot({
   let foundryConfig, linkDir;
   try {
     foundryConfig = (await fs.readJSON("foundryconfig.json")) as FoundryConfig;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
+    // eslint-disable-next-line unused-imports/no-unused-vars
   } catch (e) {
     log(chalk.magenta("foundryconfig.json not found - assuming CI"));
   }
@@ -53,8 +53,8 @@ export async function boot({
       () => {
         // no builder
       },
-      (args: ArgumentsCamelCase) => {
-        void command(finalConfig, args);
+      () => {
+        void command(finalConfig);
       },
     );
   }

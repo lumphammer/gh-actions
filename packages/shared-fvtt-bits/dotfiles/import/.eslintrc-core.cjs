@@ -9,9 +9,6 @@ module.exports = {
   ignorePatterns: ["src/*.js", "build"],
   extends: [
     "standard",
-    "plugin:react/recommended",
-    "plugin:react/jsx-runtime",
-    "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
     "prettier",
   ],
@@ -25,12 +22,7 @@ module.exports = {
     project: true,
     // tsconfigRootDir: __dirname,
   },
-  plugins: [
-    "react",
-    "@typescript-eslint",
-    "simple-import-sort",
-    "unused-imports",
-  ],
+  plugins: ["@typescript-eslint", "simple-import-sort", "unused-imports"],
   rules: {
     //
     //core rules
@@ -100,15 +92,6 @@ module.exports = {
     // either way, not nice.
 
     //
-    // react
-
-    // this isn't smart enough to to see the type param given to `React.FC<...>`
-    "react/prop-types": ["off"],
-    // if there's a better way to tell eslint about emotion's `css` props, I'd
-    // love to know
-    "react/no-unknown-property": ["error", { ignore: ["css"] }],
-
-    //
     // simple-import-sort
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
@@ -147,9 +130,6 @@ module.exports = {
         checksVoidReturn: false,
       },
     ],
-    // this is especially useful with Foundry, where some deprecated accesses
-    // don't trigger a runtime warning
-    "@typescript-eslint/no-deprecated": "error",
   },
   overrides: [
     {
@@ -176,10 +156,5 @@ module.exports = {
     JQuery: "readonly",
     mergeObject: "readonly",
     Item: "readonly",
-  },
-  settings: {
-    react: {
-      version: "detect",
-    },
   },
 };

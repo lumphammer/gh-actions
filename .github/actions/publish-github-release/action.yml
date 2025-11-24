@@ -30,12 +30,12 @@ runs:
   using: "composite"
   steps:
     - name: Download package
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: package-zip
 
     - name: Download manifest
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: manifest
 

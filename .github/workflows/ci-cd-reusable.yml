@@ -220,21 +220,21 @@ jobs:
           ls -l ${{github.workspace}}/${{ env.PACKAGE_PATH }}/${{ env.PACKAGE_FILE_NAME }}
 
       - name: Upload package file
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: package-zip
           if-no-files-found: error
           path: ${{env.PACKAGE_PATH}}/${{env.PACKAGE_FILE_NAME}}
 
       - name: Upload manifest
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: manifest
           if-no-files-found: error
           path: ${{env.PUBLIC_PATH}}/${{env.MANIFEST_FILE_NAME}}
 
       - name: Upload CHANGELOG
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: inputs.release_to_bucket && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == ''
         with:
           name: changelog
@@ -242,7 +242,7 @@ jobs:
           path: ${{inputs.changelog_file_name}}
 
       - name: Upload README
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: inputs.release_to_bucket && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == ''
         with:
           name: readme
@@ -268,12 +268,12 @@ jobs:
           echo "is_not_prerelease: $is_not_prerelease"
 
       - name: Download package
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: package-zip
 
       - name: Download manifest
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: manifest
 
@@ -291,13 +291,13 @@ jobs:
       # we download CHANGELOG and README here because they're not needed for prereleases
       - name: Download CHANGELOG
         if: needs.parse_tag.outputs.tag_prerelease == ''
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: changelog
 
       - name: Download README
         if: needs.parse_tag.outputs.tag_prerelease == ''
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: readme
 

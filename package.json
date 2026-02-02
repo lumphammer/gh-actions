@@ -7,7 +7,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "@actions/core": "^2.0.2",
+    "@actions/core": "^3.0.0",
     "@actions/github": "^7.0.0",
     "@lumphammer/shared-fvtt-bits": "workspace:*",
     "@types/fs-extra": "^11.0.4",

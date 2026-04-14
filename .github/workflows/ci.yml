@@ -13,7 +13,7 @@ jobs:
           run_install: true
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
       - run: pnpm run lint:check
       - run: pnpm run typecheck
       - run: |
@@ -26,4 +26,3 @@ jobs:
             echo "pn run build-actions caused a change - you probably haven't updated the action files"
             exit 1
           fi
-

@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/action-setup@v6
         with:
           run_install: true
       - uses: actions/setup-node@v6
@@ -26,4 +26,3 @@ jobs:
             echo "pn run build-actions caused a change - you probably haven't updated the action files"
             exit 1
           fi
-

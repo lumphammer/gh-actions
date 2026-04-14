@@ -6,11 +6,11 @@ on:
       manifest_file_name:
         required: true
         type: string
-        description: 'The name of the manifest file, e.g. `module.json`'
+        description: "The name of the manifest file, e.g. `module.json`"
       package_id:
         required: true
         type: string
-        description: 'The Foundry ID of the package, e.g. `my-graet-module`'
+        description: "The Foundry ID of the package, e.g. `my-graet-module`"
       foundry_package_release:
         required: true
         type: boolean
@@ -51,7 +51,7 @@ on:
         required: false
         type: string
         default: "9"
-        description: 'The version of pnpm to use, e.g. `9`'
+        description: "The version of pnpm to use, e.g. `9`"
       package_path:
         required: false
         type: string
@@ -106,7 +106,7 @@ on:
         description: >
           The DigitalOcean access key to use when releasing to a DO bucket. This
           is only used when `release_to_bucket` is set to `true`.
-      DO_SECRET_KEY :
+      DO_SECRET_KEY:
         required: false
         description: >
           The DigitalOcean secret key to use when releasing to a DO bucket. This
@@ -149,7 +149,6 @@ jobs:
           regex: '^refs/tags\/(prerelease-)?(v\d+\.\d+)$'
           text: ${{ github.ref }}
 
-
   instrument_parsed_tag:
     name: Instrument parsed tag
     runs-on: ${{ inputs.runs_on }}
@@ -167,11 +166,11 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -248,7 +247,6 @@ jobs:
           name: readme
           if-no-files-found: error
           path: ${{inputs.readme_file_name}}
-
 
   upload-to-bucket:
     name: Upload to bucket
@@ -334,7 +332,6 @@ jobs:
           echo "needs.upload-to-bucket.result == 'skipped': ${{ needs.upload-to-bucket.result == 'skipped' }}"
           echo "needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped': ${{ needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped' }}"
           echo "needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped'): ${{ needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped') }}"
-
 
   publish-prerelease:
     name: Publish prerelease

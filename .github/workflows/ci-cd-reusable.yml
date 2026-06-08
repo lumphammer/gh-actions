@@ -184,7 +184,7 @@ jobs:
           node --version
           pnpm --version
           corepack --version
-          npx tsc --version
+          pnpm exec tsc --version
 
       - name: Update manifest
         if: needs.parse_tag.outputs.tag_version != ''

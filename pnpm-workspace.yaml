@@ -3,3 +3,11 @@ packages:
 
 onlyBuiltDependencies:
   - "@league-of-foundry-developers/foundry-vtt-types"
+
+allowBuilds:
+  "@league-of-foundry-developers/foundry-vtt-types": true
+  "@swc/core": true
+  classic-level: true
+  esbuild: true
+
+blockExoticSubdeps: false

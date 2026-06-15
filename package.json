@@ -3,7 +3,8 @@
   "scripts": {
     "lint:check": "eslint .github",
     "build-actions": "./scripts/build-actions.sh",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "pnpm run build-actions"
   },
   "type": "module",
   "devDependencies": {

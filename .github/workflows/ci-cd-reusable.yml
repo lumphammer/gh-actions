@@ -129,7 +129,7 @@ jobs:
       tag_prerelease: ${{ steps.get_tag_version.outputs.group2 || steps.get_tag_version_generational.outputs.group1 }}
       manifest_url: ${{inputs.release_to_bucket && env.DOWNLOAD_BASE_DO || env.DOWNLOAD_BASE_GH}}/${{steps.get_tag_version.outputs.group1 || steps.get_tag_version_generational.outputs.group2}}/${{inputs.manifest_file_name}}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       # old style: three-part semver with optional prerelease suffix
       - name: Get tag version (full semver)
@@ -164,7 +164,7 @@ jobs:
     runs-on: ${{ inputs.runs_on }}
     needs: parse_tag
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - uses: pnpm/action-setup@v6
 
@@ -344,7 +344,7 @@ jobs:
       contents: write
     if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: publish
         uses: lumphammer/gh-actions/.github/actions/publish@2024-10-18.1
@@ -367,7 +367,7 @@ jobs:
       contents: write
     if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: publish
         uses: lumphammer/gh-actions/.github/actions/publish@2024-10-18.1
@@ -400,7 +400,7 @@ jobs:
     if: always() && needs.publish-release.result == 'success' && inputs.foundry_package_release
     runs-on: ${{ inputs.runs_on }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: publish
         uses: cs96and/FoundryVTT-release-package@v1

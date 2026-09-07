@@ -13,7 +13,7 @@
     "@lumphammer/shared-fvtt-bits": "workspace:*",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.13.3",
-    "@typescript-eslint/eslint-plugin": "^8.68.0",
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
     "chalk": "^6.0.0",
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",

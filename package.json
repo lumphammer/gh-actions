@@ -11,7 +11,6 @@
   "devDependencies": {
     "@actions/core": "^3.0.1",
     "@actions/github": "^9.1.1",
-    "@lumphammer/shared-fvtt-bits": "workspace:*",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.19.0",
     "chalk": "^6.0.1",

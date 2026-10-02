@@ -15,6 +15,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - run: pnpm run lint:check
+      - run: pnpm run format:check
       - run: pnpm run typecheck
       - run: |
           before=$(find .github/actions -type f -name "*.js" -exec md5sum {} + | awk '{print $1}' | sort | md5sum)

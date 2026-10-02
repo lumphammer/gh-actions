@@ -49,22 +49,20 @@ jobs:
 
 Where `XXXXX` is the SHA or tag of the commit that you want to use and `xxx-xxx-xxx` is the ID of your FVTT package.
 
-
 ## Publishing to Foundry
 
 If your package is published to Foundry, you can set `foundry_package_release` to `true` to have it auto-published when you push a new full release tag.
 
 [About the Package Release API](https://foundryvtt.com/article/package-release-api/).
 
-You will need to set the `FOUNDRY_PACKAGE_RELEASE_TOKEN` secret  in your workflow. You can get the token from the "Edit" page of your package on Foundry. Set it as a secret in your repo (**Settings** → **Secrets and variables** → **Actions** → **New repository secret**). Then pass it into the workflow like this:
+You will need to set the `FOUNDRY_PACKAGE_RELEASE_TOKEN` secret in your workflow. You can get the token from the "Edit" page of your package on Foundry. Set it as a secret in your repo (**Settings** → **Secrets and variables** → **Actions** → **New repository secret**). Then pass it into the workflow like this:
 
 ```yaml
-    secrets:
-      FOUNDRY_PACKAGE_RELEASE_TOKEN: ${{ secrets.FOUNDRY_PACKAGE_RELEASE_TOKEN }}
+secrets:
+  FOUNDRY_PACKAGE_RELEASE_TOKEN: ${{ secrets.FOUNDRY_PACKAGE_RELEASE_TOKEN }}
 ```
 
 (This goes directly below the `with` block.)
-
 
 ## Publishing to a DO bucket
 
@@ -95,17 +93,16 @@ At publish-time, the `download` URL will be set to the DO bucket URL.
 
 If you want to publish to DO, you can set `release_to_bucket` to `true` and set the following secrets (as per setting the `FOUNDRY_PACKAGE_RELEASE_TOKEN` secret above):
 
-* `DO_SECRET_KEY`
-* `DO_ACCESS_KEY`
+- `DO_SECRET_KEY`
+- `DO_ACCESS_KEY`
 
 ```yaml
-    secrets:
-      DO_SECRET_KEY: ${{ secrets.DO_SECRET_KEY }}
-      DO_ACCESS_KEY: ${{ secrets.DO_ACCESS_KEY }}
+secrets:
+  DO_SECRET_KEY: ${{ secrets.DO_SECRET_KEY }}
+  DO_ACCESS_KEY: ${{ secrets.DO_ACCESS_KEY }}
 ```
 
 You can get these from the DigitalOcean control panel (**APIs** → **Space Keys** → **Generate New Key**).
-
 
 ### Bucket folder structure
 
@@ -113,7 +110,7 @@ At the top level, the bucket has a folder for each FVTT package. Inside each of 
 
 Within `releases`, there are folders for each release version, plus a `latest` folder. Within each of those folders, there is a manifest file (aka `module.json` or `system.json`) and a zip file, which will always be called `xxx-xxx-xxx.zip` (where `xxx-xxx-xxx` is the ID of your FVTT package).
 
-`latest` *also* contains a `CHANGELOG.md` and a `README.md` file, which are copied in from the Github repo. The `latest` folder always contains the most recent non-prerelease version.
+`latest` _also_ contains a `CHANGELOG.md` and a `README.md` file, which are copied in from the Github repo. The `latest` folder always contains the most recent non-prerelease version.
 
 ```
 swords-of-the-serpentine/
@@ -147,5 +144,3 @@ halberds-of-the-hudson/
 nukes-of-the-nile/
 mancatchers-of-the-miskatonic/
 ```
-
-

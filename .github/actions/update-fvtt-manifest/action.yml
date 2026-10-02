@@ -4,22 +4,22 @@
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 name: Update manifest
-description: 'Set the download URLs in the FVTT manifest'
+description: "Set the download URLs in the FVTT manifest"
 inputs:
   manifest_path:
-    description: 'The name of the manifest file'
+    description: "The name of the manifest file"
     required: true
   release_to_bucket:
-    description: 'Publish to bucket (yes or no)'
+    description: "Publish to bucket (yes or no)"
     required: true
   tag:
-    description: 'The tag push that triggered this release'
+    description: "The tag push that triggered this release"
     required: true
   do_space_name:
-    description: 'The name of the DO space'
+    description: "The name of the DO space"
     required: true
   do_space_region:
-    description: 'The region of the DO space'
+    description: "The region of the DO space"
     required: true
 
 runs:

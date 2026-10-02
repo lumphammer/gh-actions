@@ -7,24 +7,23 @@ name: Publish GitHub release
 description: Publish GitHub release
 inputs:
   version:
-    description: 'The version to publish'
+    description: "The version to publish"
     required: true
   prerelease:
-    description: 'Pre-release signifier'
+    description: "Pre-release signifier"
     required: false
   manifest_file_name:
-    description: 'The name of the manifest file'
+    description: "The name of the manifest file"
     required: true
   package_file_name:
-    description: 'The name of the package file'
+    description: "The name of the package file"
     required: true
   github_token:
-    description: 'The GitHub token'
+    description: "The GitHub token"
     required: true
   manifest_url:
-    description: 'The URL of the manifest'
+    description: "The URL of the manifest"
     required: true
-
 
 runs:
   using: "composite"
@@ -54,7 +53,7 @@ runs:
         token: ${{ inputs.github_token }}
         removeArtifacts: true
         replacesArtifacts: true
-        artifacts: './${{inputs.manifest_file_name}}, ./${{inputs.package_file_name}}'
+        artifacts: "./${{inputs.manifest_file_name}}, ./${{inputs.package_file_name}}"
         tag: ${{ inputs.version }}
         body: >
           **Installation:** To manually install this release, please use the

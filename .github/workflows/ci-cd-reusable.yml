@@ -29,10 +29,15 @@ on:
           set the `do_space_name` and `do_space_region` inputs to override the
           defaults (`lumphammer-fvtt-packages` and `lon1` respectively).
 
-      runs_on:
+      runner_provider:
         required: false
         type: string
-        default: "ubuntu-latest"
+        default: "github"
+        description: >
+          Where to run jobs. `github` (the default) runs everything on
+          `ubuntu-latest`. `blacksmith` runs the build job on
+          `blacksmith-8vcpu-ubuntu-2404` and everything else on
+          `blacksmith-2vcpu-ubuntu-2404`. Any other value fails the workflow.
       build_path:
         required: false
         type: string
@@ -123,12 +128,27 @@ env:
 jobs:
   parse_tag:
     name: Parse tag
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     outputs:
       tag_version: ${{ steps.get_tag_version.outputs.group1 || steps.get_tag_version_generational.outputs.group2 }}
       tag_prerelease: ${{ steps.get_tag_version.outputs.group2 || steps.get_tag_version_generational.outputs.group1 }}
       manifest_url: ${{inputs.release_to_bucket && env.DOWNLOAD_BASE_DO || env.DOWNLOAD_BASE_GH}}/${{steps.get_tag_version.outputs.group1 || steps.get_tag_version_generational.outputs.group2}}/${{inputs.manifest_file_name}}
     steps:
+      # runs-on expressions can't fail, so an unknown runner_provider falls
+      # back to ubuntu-latest there; we fail here instead. Every other job
+      # depends on this one, so nothing proceeds.
+      - name: Validate runner_provider
+        env:
+          RUNNER_PROVIDER: ${{ inputs.runner_provider }}
+        run: |
+          case "$RUNNER_PROVIDER" in
+            github|blacksmith) ;;
+            *)
+              echo "::error::Invalid runner_provider '$RUNNER_PROVIDER' (expected 'github' or 'blacksmith')"
+              exit 1
+              ;;
+          esac
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       # old style: three-part semver with optional prerelease suffix
@@ -151,7 +171,7 @@ jobs:
 
   instrument_parsed_tag:
     name: Instrument parsed tag
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     needs: parse_tag
     steps:
       - name: Instrument tags capture
@@ -161,7 +181,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-8vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     needs: parse_tag
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -254,7 +274,7 @@ jobs:
       - build
       - parse_tag
     if: needs.parse_tag.outputs.tag_version != '' && inputs.release_to_bucket
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     permissions:
       contents: write
     steps:
@@ -317,7 +337,7 @@ jobs:
       - build
       - parse_tag
       - upload-to-bucket
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     permissions:
       contents: write
     if: always()
@@ -339,7 +359,7 @@ jobs:
       - build
       - parse_tag
       - upload-to-bucket
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     permissions:
       contents: write
     if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
@@ -362,7 +382,7 @@ jobs:
       - build
       - parse_tag
       - upload-to-bucket
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     permissions:
       contents: write
     if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
@@ -385,7 +405,7 @@ jobs:
       - publish-release
       - parse_tag
     if: always()
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     steps:
       - run: |
           echo "needs.publish-release.result: ${{needs.publish-release.result}}"
@@ -398,7 +418,7 @@ jobs:
       - publish-release
       - parse_tag
     if: always() && needs.publish-release.result == 'success' && inputs.foundry_package_release
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 

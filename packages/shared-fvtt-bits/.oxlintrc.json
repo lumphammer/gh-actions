@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": ["./dotfiles/import/oxlint.config.json"],
+  "plugins": ["typescript", "react"],
+  "ignorePatterns": [
+    "src/*.js",
+    "**/build",
+    "**/dist",
+    "**/node_modules",
+    "*/**/*.eslintrc*.?js",
+    "dotfiles/copy"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.js"],
+      "rules": {
+        "typescript/no-var-requires": "off"
+      }
+    },
+    {
+      "files": ["task-core/tasks/declarations.ts"],
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["dotfiles/import/createViteUserConfig.ts"],
+      "rules": {
+        "typescript/no-deprecated": "off"
+      }
+    }
+  ]
+}

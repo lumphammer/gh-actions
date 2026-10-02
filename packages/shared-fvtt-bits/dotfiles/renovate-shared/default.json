@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "schedule:weekly", "group:allNonMajor"],
+  "extends": [
+    "config:recommended",
+    "schedule:weekly",
+    "group:allNonMajor",
+    ":automergeMinor"
+  ],
   "prHourlyLimit": 0,
   "rangeStrategy": "bump",
   "assignees": ["n3dst4"],
@@ -10,5 +15,16 @@
     "@vitejs/plugin-react-swc",
     "less",
     "pnpm"
+  ],
+  "minimumReleaseAge": "1 day",
+  "packageRules": [
+    {
+      "matchPackageNames": ["actions/*"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
+      "matchDepNames": ["fvtt-types"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    }
   ]
 }

@@ -169,21 +169,27 @@ jobs:
           regex: '^refs/tags\/(prerelease-)?(v\d+\.\d+)$'
           text: ${{ github.ref }}
 
-  instrument_parsed_tag:
-    name: Instrument parsed tag
-    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
-    needs: parse_tag
-    steps:
-      - name: Instrument tags capture
-        run: |
-          echo "tag_version: ${{ needs.parse_tag.outputs.tag_version }}"
-          echo "tag_prerelease: ${{ needs.parse_tag.outputs.tag_prerelease }}"
-
   build:
     name: Build
     runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-8vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     needs: parse_tag
     steps:
+      # Instrumentation lives in steps rather than separate jobs because each
+      # job is billed for at least a minute, however short it is. The "will
+      # run" lines are the parts of each downstream job's `if:` that are known
+      # at this point; the rest depends on the results of earlier jobs.
+      - name: Instrument parsed tag and release plan
+        run: |
+          echo "tag_version: ${{ needs.parse_tag.outputs.tag_version }}"
+          echo "tag_prerelease: ${{ needs.parse_tag.outputs.tag_prerelease }}"
+          echo "manifest_url: ${{ needs.parse_tag.outputs.manifest_url }}"
+          echo "inputs.release_to_bucket: ${{ inputs.release_to_bucket }}"
+          echo "inputs.foundry_package_release: ${{ inputs.foundry_package_release }}"
+          echo "upload-to-bucket will run (if build succeeds): ${{ needs.parse_tag.outputs.tag_version != '' && inputs.release_to_bucket }}"
+          echo "publish-prerelease will run (if build and upload-to-bucket succeed or skip): ${{ needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' }}"
+          echo "publish-release will run (if build and upload-to-bucket succeed or skip): ${{ needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' }}"
+          echo "publish-to-foundry will run (if publish-release succeeds): ${{ needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' && inputs.foundry_package_release }}"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - uses: pnpm/action-setup@v6
@@ -282,8 +288,7 @@ jobs:
         run: |
           echo "needs.parse_tag.outputs.tag_version: ${{ needs.parse_tag.outputs.tag_version }}"
           echo "inputs.release_to_bucket: ${{ inputs.release_to_bucket }}"
-          echo "is_tag_and_bucket: $is_tag_and_bucket"
-          echo "is_not_prerelease: $is_not_prerelease"
+          echo "needs.parse_tag.outputs.tag_prerelease: ${{ needs.parse_tag.outputs.tag_prerelease }}"
 
       - name: Download package
         uses: actions/download-artifact@v8
@@ -331,28 +336,6 @@ jobs:
           source: .
           out_dir: ${{inputs.package_id}}/releases/latest
 
-  instrumentation:
-    name: Instrumentation
-    needs:
-      - build
-      - parse_tag
-      - upload-to-bucket
-    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
-    permissions:
-      contents: write
-    if: always()
-    steps:
-      - run: |
-          echo "needs.parse_tag.outputs.tag_version: ${{ needs.parse_tag.outputs.tag_version }}"
-          echo "needs.parse_tag.outputs.tag_prerelease: ${{ needs.parse_tag.outputs.tag_prerelease }}"
-          echo "needs.upload-to-bucket.result: ${{ needs.upload-to-bucket.result }}"
-          echo "needs.parse_tag.outputs.tag_version != '': ${{ needs.parse_tag.outputs.tag_version != '' }}"
-          echo "needs.parse_tag.outputs.tag_prerelease != '': ${{ needs.parse_tag.outputs.tag_prerelease != '' }}"
-          echo "needs.upload-to-bucket.result == 'success': ${{ needs.upload-to-bucket.result == 'success' }}"
-          echo "needs.upload-to-bucket.result == 'skipped': ${{ needs.upload-to-bucket.result == 'skipped' }}"
-          echo "needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped': ${{ needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped' }}"
-          echo "needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped'): ${{ needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped') }}"
-
   publish-prerelease:
     name: Publish prerelease
     needs:
@@ -364,6 +347,11 @@ jobs:
       contents: write
     if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease != '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
     steps:
+      - name: Instrument
+        run: |
+          echo "needs.build.result: ${{ needs.build.result }}"
+          echo "needs.upload-to-bucket.result: ${{ needs.upload-to-bucket.result }}"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: publish
@@ -387,6 +375,11 @@ jobs:
       contents: write
     if: always() && needs.parse_tag.outputs.tag_version != '' && needs.parse_tag.outputs.tag_prerelease == '' && (needs.upload-to-bucket.result == 'success' || needs.upload-to-bucket.result == 'skipped')
     steps:
+      - name: Instrument
+        run: |
+          echo "needs.build.result: ${{ needs.build.result }}"
+          echo "needs.upload-to-bucket.result: ${{ needs.upload-to-bucket.result }}"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: publish
@@ -399,19 +392,6 @@ jobs:
           manifest_url: ${{needs.parse_tag.outputs.manifest_url}}
           manifest_file_name: ${{env.MANIFEST_FILE_NAME}}
 
-  instrument-publish-to-foundry:
-    name: Instrument publish to Foundry
-    needs:
-      - publish-release
-      - parse_tag
-    if: always()
-    runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
-    steps:
-      - run: |
-          echo "needs.publish-release.result: ${{needs.publish-release.result}}"
-          echo "inputs.foundry_package_release: ${{inputs.foundry_package_release}}"
-          echo "needs.publish-release.result == 'success' && inputs.foundry_package_release: ${{needs.publish-release.result == 'success' && inputs.foundry_package_release}}"
-
   publish-to-foundry:
     name: Publish to Foundry
     needs:
@@ -420,6 +400,12 @@ jobs:
     if: always() && needs.publish-release.result == 'success' && inputs.foundry_package_release
     runs-on: ${{ inputs.runner_provider == 'blacksmith' && 'blacksmith-2vcpu-ubuntu-2404' || 'ubuntu-latest' }}
     steps:
+      - name: Instrument
+        run: |
+          echo "needs.publish-release.result: ${{ needs.publish-release.result }}"
+          echo "inputs.foundry_package_release: ${{ inputs.foundry_package_release }}"
+          echo "inputs.foundry_package_release_dry_run: ${{ inputs.foundry_package_release_dry_run }}"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: publish
